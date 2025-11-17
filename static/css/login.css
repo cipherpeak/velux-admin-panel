@@ -1,0 +1,96 @@
+
+/* Reset body and html to prevent overflow */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Custom styles for full-cover video background */
+.auth-cover-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.auth-cover-content-inner {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-cover-content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.auth-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: -1;
+}
+
+.auth-cover-sidebar-inner {
+    width: 500px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.auth-cover-card-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Remember me checkbox styling */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Alert styling */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .auth-cover-wrapper {
+        flex-direction: column;
+    }
+    
+    .auth-cover-content-inner {
+        height: 40vh;
+    }
+    
+    .auth-cover-sidebar-inner {
+        width: 100%;
+        height: 60vh;
+    }
+}

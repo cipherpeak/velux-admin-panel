@@ -1,0 +1,47 @@
+from rest_framework import serializers
+from .models import HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, PackageInclude, GalleryItem
+
+class PackageIncludeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PackageInclude
+        fields = ['id', 'item_text', 'order']
+
+class CarWashPackageSerializer(serializers.ModelSerializer):
+    includes = PackageIncludeSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = CarWashPackage
+        fields = ['id', 'title', 'description', 'ideal_for', 'button_text', 'includes', 'is_active', 'created_at']
+
+class HomePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HomePage
+        fields = ['id', 'title', 'description', 'image', 'video', 'media_type']
+
+class FranchisePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FranchisePage
+        fields = ['id', 'title', 'description', 'image', 'video', 'media_type']
+
+class PackagesPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PackagesPage
+        fields = ['id', 'title', 'description', 'image', 'video', 'media_type']
+
+class ContactPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactPage
+        fields = ['id', 'title', 'description', 'image', 'video', 'media_type']
+
+class GalleryItemSerializer(serializers.ModelSerializer):
+    file_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = GalleryItem
+        fields = ['id', 'title', 'description', 'file', 'file_url', 'type', 'created_at']
+    
+    def get_file_url(self, obj):
+        request = self.context.get('request')
+        if obj.file and request:
+            return request.build_absolute_uri(obj.file.url)
+        return None

@@ -1,0 +1,569 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="nxl-container apps-container apps-notes">
+    <div class="nxl-content without-header nxl-full-content">
+        <div class="main-content d-flex">
+            <div class="content-area" data-scrollbar-target="#psScrollbarInit">
+                <div class="content-area-body pb-0">
+                    <!-- Display Messages -->
+                    {% if messages %}
+                    <div class="container mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row note-has-grid" id="note-full-container">
+                        <!-- Home Card -->
+                        <div class="col-xxl-3 col-xl-6 col-lg-6 col-sm-6 single-note-item all-category note-important">
+                            <div class="card card-body mb-4 stretch stretch-full image-note-card">
+                                <div class="card-image-container">
+                                    {% if home_card.media_type == 'video' %}
+                                        <video class="card-media" autoplay muted loop playsinline id="card-media-1">
+                                            <source src="{{ home_card.video.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <img src="{{ home_card.image.url }}" alt="Home" class="card-media" id="card-media-1">
+                                    {% endif %}
+                                    <div class="card-overlay"></div>
+                                    <div class="card-badge badge-important">
+                                        <i class="bi bi-star me-1"></i> Home Page
+                                    </div>
+                                    <div class="media-type-badge">
+                                        {% if home_card.media_type == 'video' %}
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-image-fill"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="side-stick"></span>
+                                <h5 class="note-title text-truncate w-75 mb-1" id="card-title-1">{{ home_card.title }}</h5>
+                                <div class="note-content flex-grow-1">
+                                    <p class="text-muted note-inner-content text-truncate-3-line" id="card-description-1">{{ home_card.description }}</p>
+                                </div>
+                                <div class="card-actions mt-3">
+                                    <button class="btn btn-sm btn-primary edit-card-btn" 
+                                            data-card-id="1" 
+                                            data-card-title="{{ home_card.title }}" 
+                                            data-card-description="{{ home_card.description }}"
+                                            data-media-type="{{ home_card.media_type }}">
+                                        <i class="bi bi-pencil me-1"></i> Edit Card
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Franchise Card -->
+                        <div class="col-xxl-3 col-xl-6 col-lg-6 col-sm-6 single-note-item all-category note-social">
+                            <div class="card card-body mb-4 stretch stretch-full image-note-card">
+                                <div class="card-image-container">
+                                    {% if franchise_card.media_type == 'video' %}
+                                        <video class="card-media" autoplay muted loop playsinline id="card-media-2">
+                                            <source src="{{ franchise_card.video.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <img src="{{ franchise_card.image.url }}" alt="Franchise" class="card-media" id="card-media-2">
+                                    {% endif %}
+                                    <div class="card-overlay"></div>
+                                    <div class="card-badge badge-social">
+                                        <i class="bi bi-people me-1"></i> Franchise Page
+                                    </div>
+                                    <div class="media-type-badge">
+                                        {% if franchise_card.media_type == 'video' %}
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-image-fill"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="side-stick"></span>
+                                <h5 class="note-title text-truncate w-75 mb-1" id="card-title-2">{{ franchise_card.title }}</h5>
+                                <div class="note-content flex-grow-1">
+                                    <p class="text-muted note-inner-content text-truncate-3-line" id="card-description-2">{{ franchise_card.description }}</p>
+                                </div>
+                                <div class="card-actions mt-3">
+                                    <button class="btn btn-sm btn-primary edit-card-btn" 
+                                            data-card-id="2" 
+                                            data-card-title="{{ franchise_card.title }}" 
+                                            data-card-description="{{ franchise_card.description }}"
+                                            data-media-type="{{ franchise_card.media_type }}">
+                                        <i class="bi bi-pencil me-1"></i> Edit Card
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Packages Card -->
+                        <div class="col-xxl-3 col-xl-6 col-lg-6 col-sm-6 single-note-item all-category note-business">
+                            <div class="card card-body mb-4 stretch stretch-full image-note-card">
+                                <div class="card-image-container">
+                                    {% if packages_card.media_type == 'video' %}
+                                        <video class="card-media" autoplay muted loop playsinline id="card-media-3">
+                                            <source src="{{ packages_card.video.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <img src="{{ packages_card.image.url }}" alt="Packages" class="card-media" id="card-media-3">
+                                    {% endif %}
+                                    <div class="card-overlay"></div>
+                                    <div class="card-badge badge-business">
+                                        <i class="bi bi-award me-1"></i> Packages Page
+                                    </div>
+                                    <div class="media-type-badge">
+                                        {% if packages_card.media_type == 'video' %}
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-image-fill"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="side-stick"></span>
+                                <h5 class="note-title text-truncate w-75 mb-1" id="card-title-3">{{ packages_card.title }}</h5>
+                                <div class="note-content flex-grow-1">
+                                    <p class="text-muted note-inner-content text-truncate-3-line" id="card-description-3">{{ packages_card.description }}</p>
+                                </div>
+                                <div class="card-actions mt-3">
+                                    <button class="btn btn-sm btn-primary edit-card-btn" 
+                                            data-card-id="3" 
+                                            data-card-title="{{ packages_card.title }}" 
+                                            data-card-description="{{ packages_card.description }}"
+                                            data-media-type="{{ packages_card.media_type }}">
+                                        <i class="bi bi-pencil me-1"></i> Edit Card
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Card -->
+                        <div class="col-xxl-3 col-xl-6 col-lg-6 col-sm-6 single-note-item all-category note-personal">
+                            <div class="card card-body mb-4 stretch stretch-full image-note-card">
+                                <div class="card-image-container">
+                                    {% if contact_card.media_type == 'video' %}
+                                        <video class="card-media" autoplay muted loop playsinline id="card-media-4">
+                                            <source src="{{ contact_card.video.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <img src="{{ contact_card.image.url }}" alt="Contact" class="card-media" id="card-media-4">
+                                    {% endif %}
+                                    <div class="card-overlay"></div>
+                                    <div class="card-badge badge-personal">
+                                        <i class="bi bi-telephone me-1"></i> Contact Page
+                                    </div>
+                                    <div class="media-type-badge">
+                                        {% if contact_card.media_type == 'video' %}
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-image-fill"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="side-stick"></span>
+                                <h5 class="note-title text-truncate w-75 mb-1" id="card-title-4">{{ contact_card.title }}</h5>
+                                <div class="note-content flex-grow-1">
+                                    <p class="text-muted note-inner-content text-truncate-3-line" id="card-description-4">{{ contact_card.description }}</p>
+                                </div>
+                                <div class="card-actions mt-3">
+                                    <button class="btn btn-sm btn-primary edit-card-btn" 
+                                            data-card-id="4" 
+                                            data-card-title="{{ contact_card.title }}" 
+                                            data-card-description="{{ contact_card.description }}"
+                                            data-media-type="{{ contact_card.media_type }}">
+                                        <i class="bi bi-pencil me-1"></i> Edit Card
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Edit Card Modal -->
+<div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'dashboard:update_card' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCardModalLabel">Edit Card Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="card_id" id="editingCardId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editCardTitle" class="form-label">Card Title</label>
+                                <input type="text" class="form-control" id="editCardTitle" name="title" placeholder="Enter card title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCardDescription" class="form-label">Card Description</label>
+                                <textarea class="form-control" id="editCardDescription" name="description" rows="4" placeholder="Enter card description" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mediaType" class="form-label">Media Type</label>
+                                <select class="form-select" id="mediaType" name="media_type" required>
+                                    <option value="image">Image</option>
+                                    <option value="video">Video</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Card Media</label>
+                                <div class="image-upload-container">
+                                    <div class="media-preview-container mb-3">
+                                        <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded" style="display: none;">
+                                        <video id="videoPreview" src="" class="img-fluid rounded" style="display: none;" controls></video>
+                                    </div>
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-placeholder">
+                                            <i class="bi bi-upload fs-1 text-muted"></i>
+                                            <p class="mt-2 mb-1">Drag & drop your file here</p>
+                                            <p class="text-muted fs-12">Supports images and videos</p>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" id="browseButton">Browse Files</button>
+                                            <input type="file" id="mediaFile" name="media_file" accept="image/*,video/*" style="display: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Leave empty to keep current media</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-note-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        border: none;
+        background: #fff;
+    }
+    
+    .image-note-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-image-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .card-media {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .image-note-card:hover .card-media {
+        transform: scale(1.08);
+    }
+    
+    .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+        opacity: 0.7;
+    }
+    
+    .card-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+    
+    .media-type-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        z-index: 2;
+    }
+    
+    .badge-important {
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    }
+    
+    .badge-social {
+        background: linear-gradient(135deg, #4ecdc4, #6ae2d9);
+    }
+    
+    .badge-business {
+        background: linear-gradient(135deg, #ffa726, #ffb74d);
+    }
+    
+    .badge-personal {
+        background: linear-gradient(135deg, #ab47bc, #c158dc);
+    }
+    
+    .note-title {
+        font-weight: 700;
+        color: #2d3748;
+        margin-top: 15px;
+        font-size: 1.25rem;
+        letter-spacing: -0.025em;
+    }
+    
+    .note-content {
+        color: #718096;
+        line-height: 1.6;
+        min-height: 80px;
+    }
+    
+    .side-stick {
+        position: absolute;
+        width: 5px;
+        height: 100%;
+        top: 0;
+        left: 0;
+        border-radius: 5px 0 0 5px;
+    }
+    
+    .note-important .side-stick {
+        background: linear-gradient(to bottom, #ff6b6b, #ff8e8e);
+    }
+    
+    .note-social .side-stick {
+        background: linear-gradient(to bottom, #4ecdc4, #6ae2d9);
+    }
+    
+    .note-business .side-stick {
+        background: linear-gradient(to bottom, #ffa726, #ffb74d);
+    }
+    
+    .note-personal .side-stick {
+        background: linear-gradient(to bottom, #ab47bc, #c158dc);
+    }
+    
+    .card-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .edit-card-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .edit-card-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-upload-container {
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .image-upload-container.dragover {
+        border-color: #4a6cf7;
+        background-color: rgba(74, 108, 247, 0.05);
+    }
+    
+    .upload-area {
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .upload-placeholder {
+        text-align: center;
+        color: #a0aec0;
+    }
+    
+    .media-preview-container {
+        text-align: center;
+    }
+    
+    #imagePreview, #videoPreview {
+        max-height: 150px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap components
+        const editCardModal = new bootstrap.Modal(document.getElementById('editCardModal'));
+        
+        // Elements
+        const editButtons = document.querySelectorAll('.edit-card-btn');
+        const editingCardId = document.getElementById('editingCardId');
+        const editCardTitle = document.getElementById('editCardTitle');
+        const editCardDescription = document.getElementById('editCardDescription');
+        const mediaTypeSelect = document.getElementById('mediaType');
+        const mediaFileInput = document.getElementById('mediaFile');
+        const imagePreview = document.getElementById('imagePreview');
+        const videoPreview = document.getElementById('videoPreview');
+        const uploadArea = document.getElementById('uploadArea');
+        const browseButton = document.getElementById('browseButton');
+        
+        // Handle edit card button clicks
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const cardId = this.getAttribute('data-card-id');
+                const cardTitle = this.getAttribute('data-card-title');
+                const cardDescription = this.getAttribute('data-card-description');
+                const mediaType = this.getAttribute('data-media-type');
+                const cardMedia = document.getElementById(`card-media-${cardId}`);
+                
+                // Set current values in the modal
+                editingCardId.value = cardId;
+                editCardTitle.value = cardTitle;
+                editCardDescription.value = cardDescription;
+                mediaTypeSelect.value = mediaType;
+                
+                // Set current media preview
+                if (mediaType === 'video') {
+                    videoPreview.src = cardMedia.querySelector('source').src;
+                    videoPreview.style.display = 'block';
+                    imagePreview.style.display = 'none';
+                } else {
+                    imagePreview.src = cardMedia.src;
+                    imagePreview.style.display = 'block';
+                    videoPreview.style.display = 'none';
+                }
+                
+                // Show the modal
+                editCardModal.show();
+            });
+        });
+        
+        // Handle media type change
+        mediaTypeSelect.addEventListener('change', function() {
+            updateFileAcceptAttribute();
+        });
+        
+        // Handle file upload via browse button
+        browseButton.addEventListener('click', function() {
+            mediaFileInput.click();
+        });
+        
+        // Handle file selection
+        mediaFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleMediaFile(file);
+            }
+        });
+        
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.parentElement.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.parentElement.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.parentElement.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+                mediaFileInput.files = e.dataTransfer.files;
+                handleMediaFile(file);
+            }
+        });
+        
+        // Function to handle media file
+        function handleMediaFile(file) {
+            const reader = new FileReader();
+            
+            if (file.type.startsWith('image/')) {
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    videoPreview.style.display = 'none';
+                    // Auto-set media type to image
+                    mediaTypeSelect.value = 'image';
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type.startsWith('video/')) {
+                const url = URL.createObjectURL(file);
+                videoPreview.src = url;
+                videoPreview.style.display = 'block';
+                imagePreview.style.display = 'none';
+                // Auto-set media type to video
+                mediaTypeSelect.value = 'video';
+            }
+        }
+        
+        // Function to update file input accept attribute based on media type
+        function updateFileAcceptAttribute() {
+            const mediaType = mediaTypeSelect.value;
+            if (mediaType === 'video') {
+                mediaFileInput.accept = 'video/*';
+            } else {
+                mediaFileInput.accept = 'image/*';
+            }
+        }
+        
+        // Initialize file accept attribute
+        updateFileAcceptAttribute();
+        
+        // Reset form when modal is closed
+        document.getElementById('editCardModal').addEventListener('hidden.bs.modal', function() {
+            imagePreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+            mediaFileInput.value = ''; // Clear file input
+        });
+    });
+</script>
+
+<script src="{% static 'js/apps-notes-init.min.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <!--! ================================================================ !-->
+    <main class="nxl-container">
+        <div class="nxl-content">
+            <div class="main-content">
+                <!-- Display Messages -->
+                {% if messages %}
+                <div class="container mb-4">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Page Header with Create Button -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Car Wash Packages</h4>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPackageModal">
+                                <i class="bi bi-plus-circle me-1"></i> Create Package
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% for package in packages %}
+                    <div class="col-xxl-4 col-lg-6 mb-4">
+                        <div class="card stretch stretch-full">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0 package-title">{{ package.title }}</h5>
+                                <button class="btn btn-sm btn-primary edit-package-btn" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editPackageModal"
+                                        data-package-id="{{ package.id }}"
+                                        data-package-url="{% url 'dashboard:update_package' package.id %}">
+                                    <i class="bi bi-pencil me-1"></i> Edit
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-4 package-description">
+                                    {{ package.description }}
+                                </p>
+                                
+                                <h6 class="fw-bold mb-3">INCLUDES:</h6>
+                                
+                                <div class="mb-4 package-includes">
+                                    {% for include in package.includes.all %}
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-check-lg text-success me-2"></i>
+                                        <span>{{ include.item_text }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="border-top pt-3">
+                                    <h6 class="fw-bold mb-2">Ideal for:</h6>
+                                    <p class="text-muted mb-0 package-ideal-for">{{ package.ideal_for }}</p>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary package-button">{{ package.button_text }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-center py-5">
+                                <i class="bi bi-inbox display-1 text-muted"></i>
+                                <h4 class="mt-3">No Packages Found</h4>
+                                <p class="text-muted">No car wash packages are available at the moment.</p>
+                                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createPackageModal">
+                                    <i class="bi bi-plus-circle me-1"></i> Create Your First Package
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Package Modal -->
+    <div class="modal fade" id="createPackageModal" tabindex="-1" aria-labelledby="createPackageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'dashboard:create_package' %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createPackageModalLabel">Create New Package</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="createPackageTitle" class="form-label">Package Title</label>
+                            <input type="text" class="form-control" id="createPackageTitle" name="title" placeholder="Enter package title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="createPackageDescription" class="form-label">Package Description</label>
+                            <textarea class="form-control" id="createPackageDescription" name="description" rows="3" placeholder="Enter package description" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Package Includes</label>
+                            <div id="createIncludesContainer">
+                                <!-- Create includes will be dynamically populated here -->
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="addCreateIncludeItem">
+                                <i class="bi bi-plus-circle me-1"></i> Add Item
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="createPackageIdealFor" class="form-label">Ideal For</label>
+                            <input type="text" class="form-control" id="createPackageIdealFor" name="ideal_for" placeholder="Enter ideal usage" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="createPackageButtonText" class="form-label">Button Text</label>
+                            <input type="text" class="form-control" id="createPackageButtonText" name="button_text" placeholder="Enter button text" value="Select Package" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Package</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Package Modal -->
+    <div class="modal fade" id="editPackageModal" tabindex="-1" aria-labelledby="editPackageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="POST" action="" id="packageEditForm">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPackageModalLabel">Edit Package</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="packageTitle" class="form-label">Package Title</label>
+                            <input type="text" class="form-control" id="packageTitle" name="title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="packageDescription" class="form-label">Package Description</label>
+                            <textarea class="form-control" id="packageDescription" name="description" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Package Includes</label>
+                            <div id="includesContainer">
+                                <!-- Includes will be dynamically populated here -->
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="addIncludeItem">
+                                <i class="bi bi-plus-circle me-1"></i> Add Item
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="packageIdealFor" class="form-label">Ideal For</label>
+                            <input type="text" class="form-control" id="packageIdealFor" name="ideal_for" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="packageButtonText" class="form-label">Button Text</label>
+                            <input type="text" class="form-control" id="packageButtonText" name="button_text" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editPackageModal = new bootstrap.Modal(document.getElementById('editPackageModal'));
+            const createPackageModal = new bootstrap.Modal(document.getElementById('createPackageModal'));
+            const packageEditForm = document.getElementById('packageEditForm');
+            const packageTitle = document.getElementById('packageTitle');
+            const packageDescription = document.getElementById('packageDescription');
+            const packageIdealFor = document.getElementById('packageIdealFor');
+            const packageButtonText = document.getElementById('packageButtonText');
+            const includesContainer = document.getElementById('includesContainer');
+            const createIncludesContainer = document.getElementById('createIncludesContainer');
+
+            // Handle edit package button clicks
+            document.querySelectorAll('.edit-package-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const packageId = this.getAttribute('data-package-id');
+                    const packageUrl = this.getAttribute('data-package-url');
+                    const packageCard = this.closest('.card');
+                    
+                    // Get package data from the card
+                    const title = packageCard.querySelector('.package-title').textContent;
+                    const description = packageCard.querySelector('.package-description').textContent;
+                    const idealFor = packageCard.querySelector('.package-ideal-for').textContent;
+                    const buttonText = packageCard.querySelector('.package-button').textContent;
+                    
+                    // Get includes
+                    const includeItems = packageCard.querySelectorAll('.package-includes .d-flex span');
+                    const includes = Array.from(includeItems).map(item => item.textContent);
+                    
+                    // Populate modal form
+                    packageTitle.value = title;
+                    packageDescription.value = description;
+                    packageIdealFor.value = idealFor;
+                    packageButtonText.value = buttonText;
+                    
+                    // Populate includes
+                    includesContainer.innerHTML = '';
+                    includes.forEach(include => {
+                        addIncludeItem(include, includesContainer);
+                    });
+                    
+                    // Set form action URL
+                    packageEditForm.action = packageUrl;
+                    
+                    // Show modal
+                    editPackageModal.show();
+                });
+            });
+            
+            // Add include item button handler for edit modal
+            document.getElementById('addIncludeItem').addEventListener('click', function() {
+                addIncludeItem('', includesContainer);
+            });
+            
+            // Add include item button handler for create modal
+            document.getElementById('addCreateIncludeItem').addEventListener('click', function() {
+                addIncludeItem('', createIncludesContainer);
+            });
+            
+            // Function to add include item
+            function addIncludeItem(text, container) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'input-group mb-2';
+                
+                itemDiv.innerHTML = `
+                    <input type="text" class="form-control include-item" name="includes" value="${text}" placeholder="Enter include item" required>
+                    <button type="button" class="btn btn-outline-danger remove-include">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                `;
+                
+                container.appendChild(itemDiv);
+                
+                // Add event listener to remove button
+                itemDiv.querySelector('.remove-include').addEventListener('click', function() {
+                    itemDiv.remove();
+                });
+            }
+            
+            // Add default include item when create modal opens
+            document.getElementById('createPackageModal').addEventListener('shown.bs.modal', function() {
+                createIncludesContainer.innerHTML = '';
+                addIncludeItem('', createIncludesContainer); // Add one empty include item by default
+            });
+            
+            // Reset create modal when closed
+            document.getElementById('createPackageModal').addEventListener('hidden.bs.modal', function() {
+                document.getElementById('createPackageTitle').value = '';
+                document.getElementById('createPackageDescription').value = '';
+                document.getElementById('createPackageIdealFor').value = '';
+                document.getElementById('createPackageButtonText').value = 'Select Package';
+                createIncludesContainer.innerHTML = '';
+            });
+            
+            // Add event listeners to existing remove buttons when modals open
+            document.getElementById('editPackageModal').addEventListener('shown.bs.modal', function() {
+                includesContainer.querySelectorAll('.remove-include').forEach(button => {
+                    button.addEventListener('click', function() {
+                        this.closest('.input-group').remove();
+                    });
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
