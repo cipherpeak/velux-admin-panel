@@ -1,0 +1,865 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<main class="nxl-container apps-container">
+  <div class="nxl-content without-header nxl-full-content">
+    <div class="main-content d-flex">
+      <div class="content-area" data-scrollbar-target="#psScrollbarInit">
+        <div class="content-area-body">
+          <!-- Header -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="mb-1">Franchise Installers</h4>
+              <p class="text-muted mb-0">
+                Manage your franchise installers and their details
+              </p>
+            </div>
+            <button
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#createInstallerModal"
+            >
+              <i class="bi bi-plus-circle me-2"></i>Create Installer
+            </button>
+          </div>
+
+          <!-- Display Messages -->
+          {% if messages %}
+          <div class="container mb-4">
+            {% for message in messages %}
+            <div
+              class="alert alert-{{ message.tags }} alert-dismissible fade show"
+              role="alert"
+            >
+              {{ message }}
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Installers Table -->
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Name & Location</th>
+                      <th>Contact</th>
+                      <th>Shop Hours</th>
+                      <th>Map</th>
+                      <th>Added Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for installer in installers %}
+                    <tr>
+                      <td>
+                        {% if installer.image %}
+                        <img
+                          src="{{ installer.image.url }}"
+                          alt="{{ installer.name }}"
+                          class="rounded-circle"
+                          width="50"
+                          height="50"
+                          style="object-fit: cover"
+                        />
+                        {% else %}
+                        <div
+                          class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                          style="width: 50px; height: 50px"
+                        >
+                          <i class="bi bi-person text-muted fs-5"></i>
+                        </div>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="fw-semibold">{{ installer.name }}</div>
+                        <small class="text-muted"
+                          >{{ installer.location }}</small
+                        >
+                        {% if installer.description %}
+                        <div
+                          class="text-truncate"
+                          style="max-width: 200px"
+                          data-bs-toggle="tooltip"
+                          data-bs-html="true"
+                          title="{{ installer.description|striptags|truncatewords:30 }}"
+                        >
+                          <small class="text-muted"
+                            >{{ installer.description|striptags|truncatewords:10
+                            }}</small
+                          >
+                        </div>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="small">
+                          <div>
+                            <i class="bi bi-envelope me-1"></i>{{
+                            installer.email }}
+                          </div>
+                          <div>
+                            <i class="bi bi-telephone me-1"></i>{{
+                            installer.phone_number }}
+                          </div>
+                          {% if installer.whatsapp_number %}
+                          <div>
+                            <i class="bi bi-whatsapp me-1 text-success"></i>{{
+                            installer.whatsapp_number }}
+                          </div>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td>
+                        <small
+                          >{{ installer.shop_open_time|time:"g:i A" }} - {{
+                          installer.shop_close_time|time:"g:i A" }}</small
+                        >
+                      </td>
+                      <td>
+                        {% if installer.map_url %}
+                        <a
+                          href="{{ installer.map_url }}"
+                          target="_blank"
+                          class="btn btn-sm btn-outline-primary"
+                        >
+                          <i class="bi bi-map me-1"></i>View Map
+                        </a>
+                        {% else %}
+                        <span class="text-muted small">No map</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <small class="text-muted"
+                          >{{ installer.created_at|date:"M d, Y" }}</small
+                        >
+                      </td>
+                      <td>
+                        <div class="btn-group" style="gap: 8px">
+                          <button
+                            class="btn btn-primary edit-installer-btn"
+                            data-installer-id="{{ installer.id }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editInstallerModal{{ installer.id }}"
+                            data-bs-toggle="tooltip"
+                            title="Edit Installer"
+                          >
+                            <i class="bi bi-pencil me-1"></i>Edit
+                          </button>
+                          <button
+                            class="btn btn-danger delete-installer-btn"
+                            data-installer-id="{{ installer.id }}"
+                            data-installer-name="{{ installer.name }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteInstallerModal{{ installer.id }}"
+                            data-bs-toggle="tooltip"
+                            title="Delete Installer"
+                          >
+                            <i class="bi bi-trash me-1"></i>Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="7" class="text-center py-4">
+                        <div class="text-muted">
+                          <i class="bi bi-people display-4 d-block mb-2"></i>
+                          No installers found. <br />
+                          <small
+                            >Click "Create Installer" to add your first
+                            installer.</small
+                          >
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Create Installer Modal -->
+<div
+  class="modal fade"
+  id="createInstallerModal"
+  tabindex="-1"
+  aria-labelledby="createInstallerModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <form
+        method="POST"
+        action="{% url 'dashboard:create_installer' %}"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="createInstallerModalLabel">
+            Create New Installer
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="installerName" class="form-label"
+                  >Installer Name *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="installerName"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="installerEmail" class="form-label"
+                  >Email Address *</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="installerEmail"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="installerPhone" class="form-label"
+                  >Phone Number *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="installerPhone"
+                  name="phone_number"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="whatsappNumber" class="form-label"
+                  >WhatsApp Number</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="whatsappNumber"
+                  name="whatsapp_number"
+                  placeholder="Optional"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="installerLocation" class="form-label"
+                  >Location *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="installerLocation"
+                  name="location"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="shopOpenTime" class="form-label"
+                  >Shop Open Time *</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="shopOpenTime"
+                  name="shop_open_time"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="shopCloseTime" class="form-label"
+                  >Shop Close Time *</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="shopCloseTime"
+                  name="shop_close_time"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="mapUrl" class="form-label">Google Maps URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="mapUrl"
+                  name="map_url"
+                  placeholder="https://maps.google.com/..."
+                />
+              </div>
+              <div class="mb-3">
+                <label for="installerImage" class="form-label"
+                  >Profile Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="installerImage"
+                  name="image"
+                  accept="image/*"
+                />
+                <div class="form-text">Optional: Upload a profile picture</div>
+              </div>
+              <div class="mb-3">
+                <label for="bannerImage" class="form-label">Banner Image</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="bannerImage"
+                  name="banner_image"
+                  accept="image/*"
+                />
+                <div class="form-text">Optional: Upload a banner image</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label for="installerAddress" class="form-label"
+                  >Full Address *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="installerAddress"
+                  name="address"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="id_description" class="form-label"
+                  >Description</label
+                >
+                {{ form.description }}
+                <div class="form-text">
+                  Rich text editor with formatting options
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Create Installer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Installer Modals (One for each installer) -->
+{% for installer in installers %}
+<div
+  class="modal fade"
+  id="editInstallerModal{{ installer.id }}"
+  tabindex="-1"
+  aria-labelledby="editInstallerModalLabel{{ installer.id }}"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <form
+        method="POST"
+        action="{% url 'dashboard:edit_installer' installer.id %}"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="editInstallerModalLabel{{ installer.id }}"
+          >
+            Edit Installer
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label
+                  for="editInstallerName{{ installer.id }}"
+                  class="form-label"
+                  >Installer Name *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editInstallerName{{ installer.id }}"
+                  name="name"
+                  value="{{ installer.name }}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editInstallerEmail{{ installer.id }}"
+                  class="form-label"
+                  >Email Address *</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="editInstallerEmail{{ installer.id }}"
+                  name="email"
+                  value="{{ installer.email }}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editInstallerPhone{{ installer.id }}"
+                  class="form-label"
+                  >Phone Number *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editInstallerPhone{{ installer.id }}"
+                  name="phone_number"
+                  value="{{ installer.phone_number }}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editWhatsappNumber{{ installer.id }}"
+                  class="form-label"
+                  >WhatsApp Number</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editWhatsappNumber{{ installer.id }}"
+                  name="whatsapp_number"
+                  value="{{ installer.whatsapp_number|default_if_none:'' }}"
+                  placeholder="Optional"
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editInstallerLocation{{ installer.id }}"
+                  class="form-label"
+                  >Location *</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editInstallerLocation{{ installer.id }}"
+                  name="location"
+                  value="{{ installer.location }}"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label
+                  for="editShopOpenTime{{ installer.id }}"
+                  class="form-label"
+                  >Shop Open Time *</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="editShopOpenTime{{ installer.id }}"
+                  name="shop_open_time"
+                  value="{{ installer.shop_open_time|time:'H:i' }}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editShopCloseTime{{ installer.id }}"
+                  class="form-label"
+                  >Shop Close Time *</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="editShopCloseTime{{ installer.id }}"
+                  name="shop_close_time"
+                  value="{{ installer.shop_close_time|time:'H:i' }}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editMapUrl{{ installer.id }}" class="form-label"
+                  >Google Maps URL</label
+                >
+                <input
+                  type="url"
+                  class="form-control"
+                  id="editMapUrl{{ installer.id }}"
+                  name="map_url"
+                  value="{{ installer.map_url|default_if_none:'' }}"
+                  placeholder="https://maps.google.com/..."
+                />
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editInstallerImage{{ installer.id }}"
+                  class="form-label"
+                  >Profile Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="editInstallerImage{{ installer.id }}"
+                  name="image"
+                  accept="image/*"
+                />
+                <div class="form-text">
+                  Optional: Upload a new profile picture
+                </div>
+                {% if installer.image %}
+                <div class="mt-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      src="{{ installer.image.url }}"
+                      alt="Current image"
+                      class="current-image"
+                    />
+                    <small class="text-muted">Current profile image</small>
+                  </div>
+                </div>
+                {% else %}
+                <div class="mt-2">
+                  <small class="text-muted">No profile image uploaded</small>
+                </div>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                <label
+                  for="editBannerImage{{ installer.id }}"
+                  class="form-label"
+                  >Banner Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="editBannerImage{{ installer.id }}"
+                  name="banner_image"
+                  accept="image/*"
+                />
+                <div class="form-text">Optional: Upload a new banner image</div>
+                {% if installer.banner_image %}
+                <div class="mt-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      src="{{ installer.banner_image.url }}"
+                      alt="Current banner"
+                      class="current-image"
+                    />
+                    <small class="text-muted">Current banner image</small>
+                  </div>
+                </div>
+                {% else %}
+                <div class="mt-2">
+                  <small class="text-muted">No banner image uploaded</small>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label
+                  for="editInstallerAddress{{ installer.id }}"
+                  class="form-label"
+                  >Full Address *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="editInstallerAddress{{ installer.id }}"
+                  name="address"
+                  rows="3"
+                  required
+                >
+{{ installer.address }}</textarea
+                >
+              </div>
+              <!-- In your edit modals, use simple textarea -->
+              <div class="mb-3">
+                <label
+                  for="editDescription{{ installer.id }}"
+                  class="form-label"
+                  >Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="editDescription{{ installer.id }}"
+                  name="description"
+                  rows="6"
+                  placeholder="Enter description..."
+                >
+{{ installer.description|safe }}</textarea
+                >
+                <div class="form-text">
+                  Basic text area - rich text editor coming soon
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Update Installer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Delete Confirmation Modals (One for each installer) -->
+{% for installer in installers %}
+<div
+  class="modal fade"
+  id="deleteInstallerModal{{ installer.id }}"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to delete <strong>{{ installer.name }}</strong>?
+        </p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <form
+          method="POST"
+          action="{% url 'dashboard:delete_installer' installer.id %}"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete Installer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<style>
+  .table th {
+    font-weight: 600;
+    color: #2d3748;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .table td {
+    vertical-align: middle;
+    padding: 16px 12px;
+  }
+
+  .btn-group .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .card {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+
+  .current-image {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+  }
+
+  .text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* CKEditor styling */
+  .ck-editor__editable {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .django-ckeditor-widget {
+    width: 100%;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Initialize tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // Phone number formatting for better UX
+      const phoneInputs = document.querySelectorAll('input[name="phone_number"], input[name="whatsapp_number"]');
+      phoneInputs.forEach(input => {
+          input.addEventListener('input', function(e) {
+              let value = e.target.value.replace(/\D/g, '');
+              if (value.length > 0) {
+                  value = '+' + value;
+              }
+              e.target.value = value;
+          });
+      });
+
+      // Initialize CKEditor for create modal
+      if (document.querySelector('#id_description')) {
+          ClassicEditor
+              .create(document.querySelector('#id_description'), {
+                  toolbar: {
+                      items: [
+                          'heading', '|',
+                          'bold', 'italic', 'underline', 'strikethrough', '|',
+                          'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                          'bulletedList', 'numberedList', '|',
+                          'alignment', 'outdent', 'indent', '|',
+                          'link', 'blockQuote', 'insertTable', '|',
+                          'undo', 'redo'
+                      ]
+                  },
+                  language: 'en'
+              })
+              .catch(error => {
+                  console.error('Error initializing CKEditor for create modal:', error);
+              });
+      }
+
+      // Initialize CKEditor for edit modals when they are shown
+      // We'll use a different approach since we can't use Django template loops in JS
+      function initializeCKEditorForModal(modalId, textareaId) {
+          const modal = document.getElementById(modalId);
+          if (modal) {
+              modal.addEventListener('shown.bs.modal', function () {
+                  const textarea = document.getElementById(textareaId);
+                  if (textarea && !textarea.classList.contains('ck-initialized')) {
+                      ClassicEditor
+                          .create(textarea, {
+                              toolbar: {
+                                  items: [
+                                      'heading', '|',
+                                      'bold', 'italic', 'underline', 'strikethrough', '|',
+                                      'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                                      'bulletedList', 'numberedList', '|',
+                                      'alignment', 'outdent', 'indent', '|',
+                                      'link', 'blockQuote', 'insertTable', '|',
+                                      'undo', 'redo'
+                                  ]
+                              },
+                              language: 'en'
+                          })
+                          .then(editor => {
+                              textarea.classList.add('ck-initialized');
+                          })
+                          .catch(error => {
+                              console.error('Error initializing CKEditor:', error);
+                          });
+                  }
+              });
+          }
+      }
+
+      // Initialize all edit modals - you need to call this for each installer
+      // This is a manual approach since we can't loop in JS with Django templates
+      {% for installer in installers %}
+      initializeCKEditorForModal('editInstallerModal{{ installer.id }}', 'editDescription{{ installer.id }}');
+      {% endfor %}
+  });
+</script>
+
+<!-- Load CKEditor from CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+
+{% endblock %}

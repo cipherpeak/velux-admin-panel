@@ -16,6 +16,10 @@ urlpatterns = [
     path('gallery/add/video/', views.add_video, name='add_video'),
     path('gallery/delete/<int:item_id>/', views.delete_gallery_item, name='delete_gallery_item'),
     path('gallery/api/items/', views.get_gallery_items, name='get_gallery_items'),
+    path('franchise-installers/', views.franchise_installers, name='franchise_installers'),
+    path('create-installer/', views.create_installer, name='create_installer'),
+    path('edit-installer/<int:installer_id>/', views.edit_installer, name='edit_installer'),
+    path('delete-installer/<int:installer_id>/', views.delete_installer, name='delete_installer'),
 
     path('api/', include('dashboard.api.urls')),
 

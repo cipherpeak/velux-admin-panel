@@ -2,8 +2,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
-from ..models import HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, GalleryItem
+from ..models import FranchiseInstaller, HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, GalleryItem
 from ..serializers import (
+    FranchiseInstallerSerializer,
     HomePageSerializer, 
     FranchisePageSerializer, 
     PackagesPageSerializer, 
@@ -144,3 +145,21 @@ def gallery_items(request):
             {'error': str(e)}, 
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+    
+
+@api_view(['GET'])
+def franchise_installers_api(request):
+    """API endpoint for franchise installers"""
+    try:
+        installers = FranchiseInstaller.objects.filter(is_active=True).order_by('-created_at')
+        serializer = FranchiseInstallerSerializer(installers, many=True)
+        return Response({
+            'installers': serializer.data,
+            'count': installers.count()
+        })
+    
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )    

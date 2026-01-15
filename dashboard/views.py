@@ -330,3 +330,83 @@ def get_gallery_items(request):
     return JsonResponse({
         'items': items_data
     })
+
+
+
+
+
+from django.views.decorators.http import require_POST
+from .models import FranchiseInstaller
+from .forms import FranchiseInstallerForm
+
+@login_required
+def franchise_installers(request):
+    """Display all franchise installers"""
+    installers = FranchiseInstaller.objects.filter(is_active=True).order_by('-created_at')
+    form = FranchiseInstallerForm()  # Create empty form for the create modal
+    
+    context = {
+        'installers': installers,
+        'form': form,
+        'active_page': 'franchise_installers'
+    }
+    return render(request, 'dashboard/franchise_installers.html', context)
+
+@login_required
+def create_installer(request):
+    """Create new franchise installer"""
+    if request.method == 'POST':
+        form = FranchiseInstallerForm(request.POST, request.FILES)
+        print(form,"this is form")
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Installer created successfully!')
+                return redirect('dashboard:franchise_installers')
+            except Exception as e:
+                messages.error(request, f'Error creating installer: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    
+    # If GET request or form invalid, show the page with form in modal
+    return redirect('dashboard:franchise_installers')
+
+@login_required
+def edit_installer(request, installer_id):
+    """Edit franchise installer"""
+    installer = get_object_or_404(FranchiseInstaller, id=installer_id)
+    
+    if request.method == 'POST':
+        form = FranchiseInstallerForm(request.POST, request.FILES, instance=installer)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Installer updated successfully!')
+                return redirect('dashboard:franchise_installers')
+            except Exception as e:
+                messages.error(request, f'Error updating installer: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    
+    # If GET request, show the edit modal with current data
+    installers = FranchiseInstaller.objects.filter(is_active=True).order_by('-created_at')
+    context = {
+        'installers': installers,
+        'editing_installer': installer,
+        'active_page': 'franchise_installers'
+    }
+    return render(request, 'dashboard/franchise_installers.html', context)
+
+@login_required
+def delete_installer(request, installer_id):
+    """Delete franchise installer (soft delete)"""
+    installer = get_object_or_404(FranchiseInstaller, id=installer_id)
+    
+    try:
+        installer.is_active = False
+        installer.save()
+        messages.success(request, 'Installer deleted successfully!')
+    except Exception as e:
+        messages.error(request, f'Error deleting installer: {str(e)}')
+    
+    return redirect('dashboard:franchise_installers')

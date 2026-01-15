@@ -47,3 +47,66 @@ class GalleryItemForm(forms.ModelForm):
                 raise forms.ValidationError("Video file size must be less than 50MB.")
         
         return file
+    
+
+
+
+from django import forms
+from ckeditor.widgets import CKEditorWidget
+from .models import FranchiseInstaller
+
+class FranchiseInstallerForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget(), required=False)
+    
+    class Meta:
+        model = FranchiseInstaller
+        fields = [
+            'name', 'email', 'phone_number', 'whatsapp_number', 'location', 'address',
+            'description', 'map_url', 'shop_open_time', 'shop_close_time', 
+            'image', 'banner_image'
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter installer name'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter email address'
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter phone number'
+            }),
+            'whatsapp_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter WhatsApp number (optional)'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter location'
+            }),
+            'address': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter full address',
+                'rows': 3
+            }),
+            'map_url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Google Maps URL'
+            }),
+            'shop_open_time': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'shop_close_time': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'banner_image': forms.FileInput(attrs={
+                'class': 'form-control'
+            })
+        }

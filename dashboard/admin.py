@@ -5,3 +5,6 @@ from .models import *
 
 admin.site.register(CarWashPackage)
 admin.site.register(PackageInclude)
+admin.site.register(FranchiseInstaller)
+
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, PackageInclude, GalleryItem
+from .models import FranchiseInstaller, HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, PackageInclude, GalleryItem
 
 class PackageIncludeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,4 +44,31 @@ class GalleryItemSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if obj.file and request:
             return request.build_absolute_uri(obj.file.url)
+        return None
+    
+
+
+class FranchiseInstallerSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    banner_image_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = FranchiseInstaller
+        fields = [
+            'id', 'name', 'email', 'phone_number', 'whatsapp_number', 
+            'location', 'address', 'description', 'map_url',
+            'shop_open_time', 'shop_close_time', 'image_url', 
+            'banner_image_url', 'created_at'
+        ]
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+    
+    def get_banner_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.banner_image and request:
+            return request.build_absolute_uri(obj.banner_image.url)
         return None

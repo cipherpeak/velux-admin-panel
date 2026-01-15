@@ -1,8 +1,5 @@
 from django.db import models
-
-# Create your models here.
-
-
+from django.core.validators import RegexValidator
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -153,3 +150,35 @@ class GalleryItem(models.Model):
         storage, path = self.file.storage, self.file.path
         super().delete(*args, **kwargs)
         storage.delete(path)
+
+
+
+from ckeditor.fields import RichTextField
+
+class FranchiseInstaller(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField(unique=True)
+    phone_regex = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+    )
+    phone_number = models.CharField(validators=[phone_regex], max_length=17)
+    whatsapp_number = models.CharField(validators=[phone_regex], max_length=17, blank=True, null=True)
+    location = models.CharField(max_length=300)
+    address = models.TextField()
+    description = RichTextField(blank=True, null=True, config_name='default')
+    map_url = models.URLField(blank=True, null=True, help_text="Google Maps URL for the installer location")
+    shop_open_time = models.TimeField()
+    shop_close_time = models.TimeField()
+    image = models.ImageField(upload_to='installers/profile/', blank=True, null=True)
+    banner_image = models.ImageField(upload_to='installers/banner/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'franchise_installers'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.location}"
