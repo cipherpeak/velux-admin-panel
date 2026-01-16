@@ -42,16 +42,53 @@ DB_USER=postgres
 DB_PASSWORD=your-strong-password-here
 DB_HOST=db
 DB_PORT=5432
+
 ```
 
 ### 3. Build and Run
-
 ```bash
 # Build Docker images
 docker-compose build
 
 # Start all services
 docker-compose up -d
+```
+
+## Shared Hardware / Co-existing Deployments (Ubuntu Server)
+
+If you are deploying this alongside other projects on the same server (e.g. Ubuntu 24.04), you **MUST** configure custom ports to avoid conflicts.
+
+### 1. Update .env for Isolation
+Add these lines to your `.env` file to set specific ports for this project:
+
+```env
+# Port for the Admin Panel Web Interface (Default: 8001)
+APP_PORT=8001
+
+# Port for the Database (Default: 5433) - Keep unique if exposing or just use internal Docker network
+DB_PORT=5433
+```
+
+### 2. Configure Main Server Reverse Proxy
+You likely have Nginx or Apache running as the main web server on port 80/443. You need to proxy traffic to this project's port (e.g., 8001).
+
+**Example Nginx Config for Main Server (`/etc/nginx/sites-available/velux-admin`):**
+
+```nginx
+server {
+    listen 80;
+    server_name admin.yourdomain.com; # Your domain
+
+    location / {
+        proxy_pass http://127.0.0.1:8001; # Matches APP_PORT
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
 
 # Check service status
 docker-compose ps
