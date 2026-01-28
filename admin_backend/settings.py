@@ -48,9 +48,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -59,21 +59,39 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True  # For development only, not for production
+CORS_ALLOW_ALL_ORIGINS = False  # Disable this for production security!
 
-# OR for specific origins (safer):
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",
-#     "http://127.0.0.1:8080",
-#     "http://localhost:3000",  # Add other ports you might use
-# ]
+CORS_ALLOWED_ORIGINS = [
+    # Production Frontend (The site that will call this API)
+    "https://veluxinc.com",
+    "https://www.veluxinc.com",
+    
+    # Localhost (Keep these for testing/debugging if needed)
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
+# Allow credentials (cookies/auth headers) to be sent across domains
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
-    'content-type',
+    'accept',
+    'accept-encoding',
     'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
     'x-csrftoken',
+    'x-requested-with',
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://admin.veluxinc.com",
+    "https://www.admin.veluxinc.com",
+]
+
+# Tell Django to trust the SSL header coming from Nginx
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'admin_backend.urls'
 
