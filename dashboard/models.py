@@ -86,6 +86,7 @@ class ServiceCategory(models.Model):
         ('graphene', 'Graphene Coating'),
         ('ceramic', 'Ceramic Coating'),
         ('interior', 'Interior Detailing'),
+        ('car_wash', 'Car Wash'),
     ]
     
     service_type = models.CharField(

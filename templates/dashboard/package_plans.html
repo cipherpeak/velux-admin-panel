@@ -175,13 +175,13 @@
                     <div class="mb-3">
                         <label for="createPackageTitle" class="form-label">Package Title</label>
                         <input type="text" class="form-control" id="createPackageTitle" name="title"
-                            placeholder="Enter package title" required>
+                            placeholder="Enter package title">
                     </div>
 
                     <div class="mb-3">
                         <label for="createPackageDescription" class="form-label">Package Description</label>
                         <textarea class="form-control" id="createPackageDescription" name="description" rows="3"
-                            placeholder="Enter package description" required></textarea>
+                            placeholder="Enter package description"></textarea>
                     </div>
 
                     <div class="row mb-3">
@@ -229,13 +229,13 @@
                     <div class="mb-3">
                         <label for="createPackageIdealFor" class="form-label">Ideal For</label>
                         <input type="text" class="form-control" id="createPackageIdealFor" name="ideal_for"
-                            placeholder="Enter ideal usage" required>
+                            placeholder="Enter ideal usage">
                     </div>
 
                     <div class="mb-3">
                         <label for="createPackageButtonText" class="form-label">Button Text</label>
                         <input type="text" class="form-control" id="createPackageButtonText" name="button_text"
-                            placeholder="Enter button text" value="Select Package" required>
+                            placeholder="Enter button text" value="Select Package">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -277,13 +277,12 @@
 
                     <div class="mb-3">
                         <label for="packageTitle" class="form-label">Package Title</label>
-                        <input type="text" class="form-control" id="packageTitle" name="title" required>
+                        <input type="text" class="form-control" id="packageTitle" name="title">
                     </div>
 
                     <div class="mb-3">
                         <label for="packageDescription" class="form-label">Package Description</label>
-                        <textarea class="form-control" id="packageDescription" name="description" rows="3"
-                            required></textarea>
+                        <textarea class="form-control" id="packageDescription" name="description" rows="3"></textarea>
                     </div>
 
                     <div class="row mb-3">
@@ -328,12 +327,12 @@
 
                     <div class="mb-3">
                         <label for="packageIdealFor" class="form-label">Ideal For</label>
-                        <input type="text" class="form-control" id="packageIdealFor" name="ideal_for" required>
+                        <input type="text" class="form-control" id="packageIdealFor" name="ideal_for">
                     </div>
 
                     <div class="mb-3">
                         <label for="packageButtonText" class="form-label">Button Text</label>
-                        <input type="text" class="form-control" id="packageButtonText" name="button_text" required>
+                        <input type="text" class="form-control" id="packageButtonText" name="button_text">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -426,7 +425,7 @@
             itemDiv.className = 'input-group mb-2';
 
             itemDiv.innerHTML = `
-                    <input type="text" class="form-control include-item" name="includes" value="${text}" placeholder="Enter include item" required>
+                    <input type="text" class="form-control include-item" name="includes" value="${text}" placeholder="Enter include item" >
                     <button type="button" class="btn btn-outline-danger remove-include">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -574,7 +573,7 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="quickServiceType" class="form-label">Service Type</label>
-                        <select class="form-select" id="quickServiceType" name="service_type" required>
+                        <select class="form-select" id="quickServiceType" name="service_type">
                             <option value="">Select Type</option>
                             <option value="ppf">Paint Protection Film (PPF)</option>
                             <option value="window_tinting">Window Tinting</option>
@@ -582,6 +581,7 @@
                             <option value="graphene">Graphene Coating</option>
                             <option value="ceramic">Ceramic Coating</option>
                             <option value="interior">Interior Detailing</option>
+                            <option value="car_wash">Car Wash</option>
                         </select>
                     </div>
                     <div class="mb-3">

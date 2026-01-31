@@ -65,7 +65,9 @@
                                                         class="avatar-text avatar-sm bg-soft-primary text-primary rounded me-3">
                                                         {{ category.service_type|make_list|first|upper }}
                                                     </div>
-                                                    <span class="fs-13 fw-semibold text-dark">{{category.get_service_type_display }}</span>
+                                                    <span
+                                                        class="fs-13 fw-semibold text-dark">{{category.get_service_type_display
+                                                        }}</span>
                                                 </div>
                                             </td>
                                             <td class="px-4 py-3">
@@ -76,7 +78,8 @@
                                                     Active</span>
                                             </td>
                                             <td class="px-4 py-3 text-end">
-                                                <span class="fs-12 text-muted">{{ category.created_at|date:"M d, Y"}}</span>
+                                                <span class="fs-12 text-muted">{{ category.created_at|date:"M d,
+                                                    Y"}}</span>
                                             </td>
                                             <td class="px-4 py-3 text-end">
                                                 <div class="hstack gap-2 justify-content-end">
@@ -192,11 +195,12 @@
                             <option value="graphene">Graphene Coating</option>
                             <option value="ceramic">Ceramic Coating</option>
                             <option value="interior">Interior Detailing</option>
+                            <option value="car_wash">Car Wash</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="editCategoryName" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="editCategoryName" name="name" required>
+                        <input type="text" class="form-control" id="editCategoryName" name="name">
                     </div>
                 </div>
                 <div class="modal-footer">
