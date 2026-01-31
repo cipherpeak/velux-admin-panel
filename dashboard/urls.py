@@ -21,6 +21,12 @@ urlpatterns = [
     path('edit-installer/<int:installer_id>/', views.edit_installer, name='edit_installer'),
     path('delete-installer/<int:installer_id>/', views.delete_installer, name='delete_installer'),
 
+    # Service Category URLs
+    path('categories/', views.service_categories, name='service_categories'),
+    path('categories/create/', views.create_category, name='create_category'),
+    path('categories/update/<int:category_id>/', views.update_category, name='update_category'),
+    path('categories/delete/<int:category_id>/', views.delete_category, name='delete_category'),
+
     path('api/', include('dashboard.api.urls')),
 
 

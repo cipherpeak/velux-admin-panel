@@ -1,17 +1,29 @@
 from rest_framework import serializers
-from .models import FranchiseInstaller, HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, PackageInclude, GalleryItem
+from .models import FranchiseInstaller, HomePage, FranchisePage, PackagesPage, ContactPage, CarWashPackage, PackageInclude, GalleryItem, ServiceCategory
 
 class PackageIncludeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageInclude
         fields = ['id', 'item_text', 'order']
 
+class ServiceCategorySerializer(serializers.ModelSerializer):
+    service_type_display = serializers.CharField(source='get_service_type_display', read_only=True)
+
+    class Meta:
+        model = ServiceCategory
+        fields = ['id', 'name', 'service_type', 'service_type_display']
+
 class CarWashPackageSerializer(serializers.ModelSerializer):
     includes = PackageIncludeSerializer(many=True, read_only=True)
+    category = ServiceCategorySerializer(read_only=True)
     
     class Meta:
         model = CarWashPackage
-        fields = ['id', 'title', 'description', 'ideal_for', 'button_text', 'includes', 'is_active', 'created_at']
+        fields = [
+            'id', 'category', 'title', 'description', 'ideal_for', 
+            'material', 'warranty', 'saloon_price', 'suv_price',
+            'button_text', 'includes', 'is_active', 'created_at'
+        ]
 
 class HomePageSerializer(serializers.ModelSerializer):
     class Meta:

@@ -118,24 +118,41 @@ def update_card(request):
 
 
 
+from .models import CarWashPackage, HomePage, FranchisePage, PackageInclude, PackagesPage, ContactPage, ServiceCategory
+
 @login_required
 def package_page(request):
-    # Get all active packages
-    packages = CarWashPackage.objects.filter(is_active=True).order_by('created_at')
+    # Get all active packages ordered by service type and name
+    packages = CarWashPackage.objects.filter(is_active=True).select_related('category').order_by('category__service_type', 'category__name', 'created_at')
+    
+    # Get all service categories for the dropdown
+    categories = ServiceCategory.objects.all().order_by('service_type', 'name')
     
     context = {
         'packages': packages,
+        'categories': categories,
     }
     return render(request, 'dashboard/package_plans.html', context)
 
 def create_package(request):
     if request.method == 'POST':
         try:
+            # Get category
+            category_id = request.POST.get('category')
+            category = None
+            if category_id:
+                category = get_object_or_404(ServiceCategory, id=category_id)
+
             # Create new package
             package = CarWashPackage.objects.create(
+                category=category,
                 title=request.POST.get('title'),
                 description=request.POST.get('description'),
                 ideal_for=request.POST.get('ideal_for'),
+                material=request.POST.get('material'),
+                warranty=request.POST.get('warranty'),
+                suv_price=request.POST.get('suv_price') or 0,
+                saloon_price=request.POST.get('saloon_price') or 0,
                 button_text=request.POST.get('button_text'),
                 is_active=True
             )
@@ -165,10 +182,21 @@ def update_package(request, package_id):
         package = get_object_or_404(CarWashPackage, id=package_id)
         
         try:
+            # Update category
+            category_id = request.POST.get('category')
+            if category_id:
+                package.category = get_object_or_404(ServiceCategory, id=category_id)
+            else:
+                package.category = None
+
             # Update package fields
             package.title = request.POST.get('title')
             package.description = request.POST.get('description')
             package.ideal_for = request.POST.get('ideal_for')
+            package.material = request.POST.get('material')
+            package.warranty = request.POST.get('warranty')
+            package.suv_price = request.POST.get('suv_price') or 0
+            package.saloon_price = request.POST.get('saloon_price') or 0
             package.button_text = request.POST.get('button_text')
             package.save()
             
@@ -410,3 +438,80 @@ def delete_installer(request, installer_id):
         messages.error(request, f'Error deleting installer: {str(e)}')
     
     return redirect('dashboard:franchise_installers')
+
+
+
+
+@login_required
+def service_categories(request):
+    """Display all service categories"""
+    categories = ServiceCategory.objects.all().order_by('service_type', 'name')
+    for category in categories:
+        print(category.service_type)
+    context = {
+        'categories': categories,
+        'active_page': 'service_categories'
+    }
+    return render(request, 'dashboard/service_categories.html', context)
+
+@login_required
+def create_category(request):
+    """Create new service category (handles regular POST and AJAX)"""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        service_type = request.POST.get('service_type')
+        
+        try:
+            category = ServiceCategory.objects.create(
+                name=name,
+                service_type=service_type
+            )
+            
+            # Check for AJAX request
+            is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+            
+            if is_ajax:
+                return JsonResponse({
+                    'success': True,
+                    'category': {
+                        'id': category.id,
+                        'name': category.name,
+                        'service_type_display': category.get_service_type_display()
+                    },
+                    'message': 'Category created successfully!'
+                })
+            
+            messages.success(request, 'Category created successfully!')
+            return redirect('dashboard:service_categories')
+            
+        except Exception as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': str(e)
+                }, status=400)
+            messages.error(request, f'Error creating category: {str(e)}')
+    
+    return redirect('dashboard:service_categories')
+
+@login_required
+def update_category(request, category_id):
+    """Update service category"""
+    category = get_object_or_404(ServiceCategory, id=category_id)
+    
+    if request.method == 'POST':
+        category.name = request.POST.get('name')
+        category.service_type = request.POST.get('service_type')
+        category.save()
+        
+        messages.success(request, 'Category updated successfully!')
+    
+    return redirect('dashboard:service_categories')
+
+@login_required
+def delete_category(request, category_id):
+    """Delete service category"""
+    category = get_object_or_404(ServiceCategory, id=category_id)
+    category.delete()
+    messages.success(request, 'Category deleted successfully!')
+    return redirect('dashboard:service_categories')

@@ -78,7 +78,43 @@ class ContactPage(models.Model):
 from django.db import models
 from django.contrib.auth.models import User
 
+class ServiceCategory(models.Model):
+    SERVICE_CHOICES = [
+        ('interior', 'Interior Detailing'),
+        ('exterior', 'Exterior Detailing'),
+        ('ppf', 'Paint Protection Film (PPF)'),
+        ('ceramic', 'Ceramic Coating'),
+        ('wash', 'Car Wash'),
+        ('window_film', 'Window Film'),
+    ]
+    
+    service_type = models.CharField(
+        max_length=50, 
+        choices=SERVICE_CHOICES, 
+        default='wash'
+    )
+    name = models.CharField(
+        max_length=100,
+        help_text="Sub-category name (e.g., Glossy, Matte, Standard)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Service Category"
+        verbose_name_plural = "Service Categories"
+
+    def __str__(self):
+        return f"{self.get_service_type_display()} - {self.name}"
+
 class CarWashPackage(models.Model):
+    category = models.ForeignKey(
+        ServiceCategory,
+        on_delete=models.CASCADE,
+        related_name='packages',
+        null=True,
+        blank=True
+    )
     title = models.CharField(max_length=200, default="Essential Care")
     description = models.TextField(
         default="Perfect for maintaining your vehicle's appearance with professional exterior and interior care."
@@ -86,6 +122,30 @@ class CarWashPackage(models.Model):
     ideal_for = models.CharField(
         max_length=300, 
         default="Regular maintenance, monthly touch-ups"
+    )
+    material = models.CharField(
+        max_length=200, 
+        blank=True, 
+        null=True,
+        help_text="Material information if applicable"
+    )
+    warranty = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        help_text="Warranty duration or terms"
+    )
+    saloon_price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0.00,
+        help_text="Price for Saloon/Sedan"
+    )
+    suv_price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0.00,
+        help_text="Price for SUV/4x4"
     )
     button_text = models.CharField(
         max_length=100, 
@@ -100,7 +160,7 @@ class CarWashPackage(models.Model):
         verbose_name_plural = "Car Wash Packages"
     
     def __str__(self):
-        return self.title
+        return f"{self.category} - {self.title}"
 
 class PackageInclude(models.Model):
     package = models.ForeignKey(
