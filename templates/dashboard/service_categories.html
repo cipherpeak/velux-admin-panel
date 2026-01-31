@@ -65,7 +65,7 @@
                                                         class="avatar-text avatar-sm bg-soft-primary text-primary rounded me-3">
                                                         {{ category.service_type|make_list|first|upper }}
                                                     </div>
-                                                    <span class="fs-13 fw-semibold text-dark">{{ category.get_service_type_display }}</span>
+                                                    <span class="fs-13 fw-semibold text-dark">{{category.get_service_type_display }}</span>
                                                 </div>
                                             </td>
                                             <td class="px-4 py-3">
@@ -76,7 +76,7 @@
                                                     Active</span>
                                             </td>
                                             <td class="px-4 py-3 text-end">
-                                                <span class="fs-12 text-muted">{{ category.created_at|date:"M d, Y" }}</span>
+                                                <span class="fs-12 text-muted">{{ category.created_at|date:"M d, Y"}}</span>
                                             </td>
                                             <td class="px-4 py-3 text-end">
                                                 <div class="hstack gap-2 justify-content-end">
@@ -147,18 +147,18 @@
                         <label for="createServiceType" class="form-label">Service Type</label>
                         <select class="form-select" id="createServiceType" name="service_type" required>
                             <option value="">Select Service Type</option>
-                            <option value="interior">Interior Detailing</option>
-                            <option value="exterior">Exterior Detailing</option>
                             <option value="ppf">Paint Protection Film (PPF)</option>
+                            <option value="window_tinting">Window Tinting</option>
+                            <option value="borophene">Borophene Coating</option>
+                            <option value="graphene">Graphene Coating</option>
                             <option value="ceramic">Ceramic Coating</option>
-                            <option value="wash">Car Wash</option>
-                            <option value="window_film">Window Film</option>
+                            <option value="interior">Interior Detailing</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="createCategoryName" class="form-label">Category Name</label>
                         <input type="text" class="form-control" id="createCategoryName" name="name"
-                            placeholder="e.g. Glossy, Matte" required>
+                            placeholder="e.g. Glossy, Matte">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -186,12 +186,12 @@
                         <label for="editServiceType" class="form-label">Service Type</label>
                         <select class="form-select" id="editServiceType" name="service_type" required>
                             <option value="">Select Service Type</option>
-                            <option value="interior">Interior Detailing</option>
-                            <option value="exterior">Exterior Detailing</option>
                             <option value="ppf">Paint Protection Film (PPF)</option>
+                            <option value="window_tinting">Window Tinting</option>
+                            <option value="borophene">Borophene Coating</option>
+                            <option value="graphene">Graphene Coating</option>
                             <option value="ceramic">Ceramic Coating</option>
-                            <option value="wash">Car Wash</option>
-                            <option value="window_film">Window Film</option>
+                            <option value="interior">Interior Detailing</option>
                         </select>
                     </div>
                     <div class="mb-3">

@@ -80,12 +80,12 @@ from django.contrib.auth.models import User
 
 class ServiceCategory(models.Model):
     SERVICE_CHOICES = [
-        ('interior', 'Interior Detailing'),
-        ('exterior', 'Exterior Detailing'),
         ('ppf', 'Paint Protection Film (PPF)'),
+        ('window_tinting', 'Window Tinting'),
+        ('borophene', 'Borophene Coating'),
+        ('graphene', 'Graphene Coating'),
         ('ceramic', 'Ceramic Coating'),
-        ('wash', 'Car Wash'),
-        ('window_film', 'Window Film'),
+        ('interior', 'Interior Detailing'),
     ]
     
     service_type = models.CharField(

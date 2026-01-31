@@ -161,7 +161,8 @@
                             <select class="form-select" id="createPackageCategory" name="category">
                                 <option value="">Select Category</option>
                                 {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.get_service_type_display }} - {{category.name}}</option>
+                                <option value="{{ category.id }}">{{ category.get_service_type_display }} -
+                                    {{category.name}}</option>
                                 {% endfor %}
                             </select>
                             <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
@@ -263,7 +264,8 @@
                             <select class="form-select" id="packageCategory" name="category">
                                 <option value="">Select Category</option>
                                 {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.get_service_type_display }} - {{category.name }}</option>
+                                <option value="{{ category.id }}">{{ category.get_service_type_display }} -
+                                    {{category.name }}</option>
                                 {% endfor %}
                             </select>
                             <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
@@ -574,18 +576,18 @@
                         <label for="quickServiceType" class="form-label">Service Type</label>
                         <select class="form-select" id="quickServiceType" name="service_type" required>
                             <option value="">Select Type</option>
-                            <option value="interior">Interior Detailing</option>
-                            <option value="exterior">Exterior Detailing</option>
                             <option value="ppf">Paint Protection Film (PPF)</option>
+                            <option value="window_tinting">Window Tinting</option>
+                            <option value="borophene">Borophene Coating</option>
+                            <option value="graphene">Graphene Coating</option>
                             <option value="ceramic">Ceramic Coating</option>
-                            <option value="wash">Car Wash</option>
-                            <option value="window_film">Window Film</option>
+                            <option value="interior">Interior Detailing</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="quickCategoryName" class="form-label">Name</label>
                         <input type="text" class="form-control" id="quickCategoryName" name="name"
-                            placeholder="e.g. Glossy" required>
+                            placeholder="e.g. Glossy">
                     </div>
                 </form>
             </div>
