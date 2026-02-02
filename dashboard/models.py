@@ -86,6 +86,7 @@ class ServiceCategory(models.Model):
         ('graphene', 'Graphene Coating'),
         ('ceramic', 'Ceramic Coating'),
         ('interior', 'Interior Detailing'),
+        ('exterior', 'Exterior Detailing'),
         ('car_wash', 'Car Wash'),
     ]
     
